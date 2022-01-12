@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>UCSC LiftOver Server</title>
+    <meta name="description" content="LiftOver server implementing pyliftover (https://github.com/konstantint/pyliftover)
+    for 23andMe-formatted genetic test raw data">
+    <meta name="author" content="Kirill Danilov, danilovkiri@yandex.ru">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="shortcut icon" type="image/x-icon" href="resources/dna_icon.ico" />
+    <link rel="stylesheet" type="text/css" href="css/basic.css">
+    <link rel="stylesheet" type="text/css" href="css/animation.css">
+    <link rel="stylesheet" type="text/css" href="css/dimmer.css">
+    <link rel="stylesheet" type="text/css" href="css/popupJS.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+<div id="dimmer"></div>
+
+<div class="header">
+    <a href="index.html">UCSC LiftOver Service<br></a>
+    <button type="button" class="collapsibleInfo">Note</button>
+    <div class="infoContent">
+        <p>Accepts for 23andMe-formatted raw data plain text files with 4 tab-separated columns in accordance with the scheme: rsID, CHROM, POS, GT. Header lines
+            (prefixed with #) are optional and ignored. Authentication is required. </p>
+    </div>
+</div>
+
+<form enctype="multipart/form-data" action="/index/hg19to38/" method="post">
+    <div class="contentLeft">
+        <input type="file" id="uploadFile" name="uploadFile" accept=".txt" class="submitFormButton" style="display:none;" onchange="GetFileSizeNameAndType();"/>
+        <label for="uploadFile" class="submitFormButton">Select file</label>
+    </div>
+    <div class="contentRight">
+        <button id="submitButton" class="submitFormButton" value="upload" onclick="dim();cookieSettle();alert()" disabled style="background-color:#775656;">Submit</button>
+    </div>
+</form>
+
+
+<div class="uploadFileMetadata">
+    <p id="fileProperties">No file selected</p>
+</div>
+
+<div class="bottom">
+    <p><a href="index.html" class="active-main-button-bottom">Main page</a></p>
+    <p><a href="https://github.com/konstantint/pyliftover">Pyliftover GitHub</a></p>
+    <p>Maintenance and bugs: <a href="https://github.com/danilovkiri/nonamejustyet">GitHub</a></p>
+
+</div>
+
+<script src="js/dimmer.js"></script>
+<script src="js/popupJQ.js"></script>
+<script src="js/collapsibleInfo.js"></script>
+<script src="js/collapsibleButton.js"></script>
+<script src="js/fileUpload.js"></script>
+<script src="js/cookie.js"></script>
+
+
+</body>
+</html>

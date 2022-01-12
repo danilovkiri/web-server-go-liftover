@@ -1,0 +1,10 @@
+.idea
+venv
+resources/localhost.pem
+resources/localhost-key.pem
+output-files
+temp-files
+liftover/pyliftover/__pycache__
+public/.DS_Store
+liftover/__pycache__
+.DS_Store

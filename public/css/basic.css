@@ -1,0 +1,226 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    padding: 0
+}
+
+.contentLeft {
+    float: left;
+    width: 20%;
+    margin: 0;
+    padding-left: 30vw;
+    background-color: rgba(255, 255, 255, 0);
+}
+.contentRight {
+    float: right;
+    width: 20%;
+    margin: 0;
+    padding-right: 30vw;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.contentLeft button {
+    background: #404044;
+    color: #8c918e;
+    font-family: Helvetica;
+    font-size: 1.6vw;
+    height: 60px;
+    width: 11vw;
+    line-height: 60px;
+    margin: 25px 25px;
+    text-align: center;
+    border: 0;
+    border-radius: 10px;
+    transition: all 0.2s ease 0s;
+    opacity: 1;
+    display: inline-block;
+}
+
+.contentRight button {
+    background: #404044;
+    color: #8c918e;
+    font-family: Helvetica;
+    font-size: 1.6vw;
+    height: 60px;
+    width: 11vw;
+    line-height: 60px;
+    margin: 25px 25px;
+    text-align: center;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.2s ease 0s;
+    opacity: 1;
+    display: inline-block;
+}
+
+button:hover {
+    opacity: 0.75;
+}
+
+::-webkit-file-upload-button {
+    display: none;
+}
+
+.collapsibleButton {
+    cursor: pointer;
+    text-align: center;
+    outline: none;
+}
+
+.collapsibleButton:hover {
+    color: white;
+}
+
+.buttonContent {
+    width: 11vw;
+    border-radius: 10px;
+    margin: 0 auto;
+    font-family: Helvetica;
+    font-size: 1.6vw;
+    color: #8c918e;
+    background-color: #404044;
+    opacity: 0.75;
+    text-align: center;
+    padding: 0 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.submitFormButton {
+    background: #404044;
+    color: #8c918e;
+    font-family: Helvetica;
+    font-size: 1.6vw;
+    height: 60px;
+    width: 11vw;
+    line-height: 60px;
+    margin: 25px 25px;
+    text-align: center;
+    border: 0;
+    border-radius: 10px;
+    opacity: 1;
+    display: inline-block;
+    transition: all 0.2s ease 0s;
+    cursor: pointer;
+}
+
+.submitFormButton:hover {
+    opacity: 0.75;
+}
+
+.uploadFileMetadata {
+    font-family: Helvetica;
+    font-size: 1.6vw;
+    position: relative;
+    margin-top: 23vh;
+    width: 31vw;
+    height: 7vw;
+    background-color: #404044;
+    color: #8c918e;
+    border-radius: 10px;
+    left: 50%;
+    transition: all 0.2s ease 0s;
+    /*-ms-transform: translateX(-50%) translateY(-50%);*/
+    transform: translate(-50%,-50%);
+}
+
+.uploadFileMetadata p {
+    font-family: Helvetica;
+    margin-top: 0;
+    font-size: 1.3vw;
+    padding-top: 2.7vw;
+    text-align: center;
+    color: #8c918e;
+}
+
+.header {
+    position: relative;
+    width: 100vw;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    background-color: #404044;
+    color: white;
+    font-family: Helvetica;
+}
+
+.header a {
+    color: #8c918e;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 40px;
+}
+
+.header a:hover {
+    color: white;
+}
+
+.header p {
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 15px;
+}
+
+.header > .infoContent {
+    color: #8c918e;
+    background-color: #404044;
+    text-align: center;
+    padding: 0 0px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.collapsibleInfo {
+    background-color: #404044;
+    color: #8c918e;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: center;
+    outline: none;
+    font-size: 15px;
+}
+
+.active, .collapsibleInfo:hover {
+    color: white;
+}
+
+.collapsibleInfo:after {
+    content: '\02795'; /* Unicode character for "plus" sign (+) */
+    font-size: 13px;
+    color: #ff0000;
+    font-weight: bold;
+    float: none;
+}
+
+.active:after {
+    content: "\2796"; /* Unicode character for "minus" sign (-) */
+}
+
+.bottom {
+    position: absolute;
+    width: 100vw;
+    bottom: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 10px;
+    background-color: #404044;
+    color: white;
+    font-family: Helvetica;
+}
+
+.bottom a {
+    color: #8c918e;
+    text-decoration: none;
+    font-weight: 400;
+}
+
+.bottom a:hover {
+    color: white;
+}
