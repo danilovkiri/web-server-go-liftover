@@ -114,7 +114,7 @@ func (app *application) mainHandler38to19(w http.ResponseWriter, r *http.Request
 	}
 	tempId := utils.GetTempId(tempFile.Name())
 	outputFile := "hg38toHg19." + tempId + ".txt"
-	executableCmd := utils.MakeCmdStruct(app.path.cwd, tempFile.Name(), app.path.processedDir+outputFile, "hg39")
+	executableCmd := utils.MakeCmdStruct(app.path.cwd, tempFile.Name(), app.path.processedDir+outputFile, "hg38")
 	fmt.Println("### INFO: Compiled shell command", executableCmd.String())
 	errCmdRun := executableCmd.Run()
 	if errCmdRun != nil {

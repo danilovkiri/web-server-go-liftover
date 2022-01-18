@@ -31,7 +31,7 @@ func RemoveFile(path string) {
 func GetCwd() string {
 	dir, err := os.Getwd()
 	if err != nil {
-		log.Panic(err)
+		log.Panic("### ERROR: ", err)
 	}
 	return dir
 }
@@ -39,7 +39,7 @@ func GetCwd() string {
 func GetFileSize(inputFile string) string {
 	fi, err := os.Stat(inputFile)
 	if err != nil {
-		log.Panic(err)
+		log.Panic("### ERROR: ", err)
 	}
 	return string(fi.Size())
 }
@@ -74,7 +74,7 @@ func CheckUploadedFileConformity(inputFile string) string {
 	status := "ok"
 	file, err := os.Open(inputFile)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("### ERROR: ", err)
 	}
 	defer file.Close()
 	reader := bufio.NewScanner(file)
