@@ -29,7 +29,7 @@
     </div>
 </div>
 
-<form enctype="multipart/form-data" action="/index/hg19to38/" method="post">
+<form enctype="multipart/form-data" action="/index/hg19to38/" method="post" target="my_iframe">
     <div class="contentLeft">
         <input type="file" id="uploadFile" name="uploadFile" accept=".txt" class="submitFormButton" style="display:none;" onchange="GetFileSizeNameAndType();"/>
         <label for="uploadFile" class="submitFormButton">Select file</label>
@@ -44,10 +44,12 @@
     <p id="fileProperties">No file selected</p>
 </div>
 
+<iframe name="my_iframe" onload="relaxWindow()"></iframe>
+
 <div class="bottom">
     <p><a href="index.html" class="active-main-button-bottom">Main page</a></p>
     <p><a href="https://github.com/konstantint/pyliftover">Pyliftover GitHub</a></p>
-    <p>Maintenance and bugs: <a href="https://github.com/danilovkiri/nonamejustyet">GitHub</a></p>
+    <p>Maintenance and bugs: <a href="https://github.com/danilovkiri/web-server-go-liftover">GitHub</a></p>
 
 </div>
 

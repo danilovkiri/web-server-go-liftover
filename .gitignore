@@ -1,10 +1,10 @@
 .idea
 venv
-resources/localhost.pem
-resources/localhost-key.pem
-output-files
-temp-files
+localhost.pem
+localhost-key.pem
+file-storage
 liftover/pyliftover/__pycache__
 public/.DS_Store
 liftover/__pycache__
 .DS_Store
+local-config.yaml

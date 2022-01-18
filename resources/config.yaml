@@ -1,5 +1,0 @@
-constants:
-  certFile: ./resources/localhost.pem
-  keyFile: ./resources/localhost-key.pem
-  serverIP: 192.168.1.68
-  serverPort: 4000

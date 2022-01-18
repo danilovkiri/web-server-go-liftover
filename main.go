@@ -20,6 +20,11 @@ type application struct {
 		password   string
 		configpath string
 	}
+	path struct {
+		uploadedDir  string
+		processedDir string
+		cwd          string
+	}
 }
 
 func main() {
@@ -28,12 +33,15 @@ func main() {
 	app.auth.password = os.Getenv("AUTH_PASSWORD")
 	app.auth.configpath = os.Getenv("CONFIG")
 	yamlConfig := config.ParseConfig(app.auth.configpath)
+	app.path.uploadedDir = yamlConfig.Constants.FileStorage + "/uploaded-files/"
+	app.path.processedDir = yamlConfig.Constants.FileStorage + "/processed-files/"
+	app.path.cwd = utils.GetCwd()
 
 	if app.auth.username == "" {
-		log.Fatal("Basic auth username must be provided")
+		log.Fatal("### ERROR: Basic auth username must be provided")
 	}
 	if app.auth.password == "" {
-		log.Fatal("Basic auth password must be provided")
+		log.Fatal("### ERROR: Basic auth password must be provided")
 	}
 
 	mux := http.NewServeMux()
@@ -49,102 +57,150 @@ func main() {
 		WriteTimeout: 30 * time.Second,
 	}
 
-	log.Printf("starting server on %s", srv.Addr)
+	utils.MakeDir(yamlConfig.Constants.FileStorage)
+	utils.MakeDir(app.path.uploadedDir)
+	utils.MakeDir(app.path.processedDir)
+	log.Printf("### INFO: Using CWD %s", app.path.cwd)
+	log.Printf("### INFO: Starting server on %s", srv.Addr)
 	err := srv.ListenAndServeTLS(yamlConfig.Constants.CertFile, yamlConfig.Constants.KeyFile)
 	log.Fatal(err)
 }
 
 func (app *application) mainHandler38to19(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("File Upload Endpoint Hit")
-	r.ParseMultipartForm(1)
+	fmt.Println("### INFO: File Upload Endpoint Hit")
+	err := r.ParseMultipartForm(1)
+	if err != nil {
+		fmt.Println("### ERROR", err)
+		http.Error(w, "Oops! Could not parse multipart form data", http.StatusInternalServerError)
+		return
+	}
 	file, handler, err := r.FormFile("uploadFile")
 	if err != nil {
-		fmt.Println("Error Retrieving the File")
-		fmt.Println(err)
+		fmt.Println("### ERROR", err)
+		http.Error(w, "Oops! Could not get a file from the provided multipart form data", http.StatusInternalServerError)
 		return
 	}
 	defer file.Close()
-	fmt.Printf("Uploaded File: %+v\n", handler.Filename)
-	fmt.Printf("File Size: %+v\n", handler.Size)
-	fmt.Printf("MIME Header: %+v\n", handler.Header)
-	tempFile, err := ioutil.TempFile("temp-files", handler.Filename+"_upload*")
+	fmt.Printf("--- INFO: Uploaded File: %+v\n", handler.Filename)
+	fmt.Printf("--- INFO: File Size: %+v\n", handler.Size)
+	fmt.Printf("--- INFO: MIME Header: %+v\n", handler.Header)
+	tempFile, err := ioutil.TempFile(app.path.uploadedDir, handler.Filename+"_upload*")
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("### ERROR:", err)
+		http.Error(w, "Oops! Could not open a temporary file to store upload", http.StatusInternalServerError)
+		return
 	}
 	defer tempFile.Close()
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("### ERROR:", err)
+		http.Error(w, "Oops! Could not read multipart form data", http.StatusInternalServerError)
+		return
 	}
-	tempFile.Write(fileBytes)
-
-	fmt.Println("### INFO: Temp file written to", tempFile.Name())
-	cwd := utils.GetCwd() + "/"
+	_, err1 := tempFile.Write(fileBytes)
+	if err1 != nil {
+		fmt.Println("### ERROR:", err1)
+		http.Error(w, "Oops! Could not dump uploaded multipart form data into a temporary file", http.StatusInternalServerError)
+		return
+	}
+	fmt.Println("### INFO: Client-provided file was written to", tempFile.Name())
+	fileConformityStatus := utils.CheckUploadedFileConformity(tempFile.Name())
+	if fileConformityStatus != "ok" {
+		fmt.Println("### WARNING:", fileConformityStatus)
+		cookieObj := cookie.SetConformityFailedCookie()
+		http.SetCookie(w, &cookieObj)
+		utils.RemoveFile(tempFile.Name())
+		return
+	}
 	tempId := utils.GetTempId(tempFile.Name())
-	outputFile := "output-files/hg38tohg19." + tempId + ".txt"
-	genomeBuild := "hg38"
-	executableCmd := utils.MakeCmdStruct(cwd, cwd+tempFile.Name(), cwd+outputFile, genomeBuild)
+	outputFile := "hg38toHg19." + tempId + ".txt"
+	executableCmd := utils.MakeCmdStruct(app.path.cwd, tempFile.Name(), app.path.processedDir+outputFile, "hg39")
 	fmt.Println("### INFO: Compiled shell command", executableCmd.String())
-
 	errCmdRun := executableCmd.Run()
 	if errCmdRun != nil {
 		fmt.Println("### ERROR", errCmdRun)
-		fmt.Fprintln(w, "Oops! Something went wrong on the server side.")
+		http.Error(w, "Oops! Pyliftover returned a non-zero exit code", http.StatusInternalServerError)
+		utils.RemoveFile(tempFile.Name())
+		return
 	} else {
 		w.Header().Set("Content-Disposition", "attachment; filename="+outputFile)
-		w.Header().Set("Content-Type", r.Header.Get("Content-Type"))
-		w.Header().Set("Content-Length", r.Header.Get("Content-Length"))
+		w.Header().Set("Content-Type", "text/plain")
+		w.Header().Set("Content-Length", utils.GetFileSize(app.path.processedDir+outputFile))
 		cookieObj := cookie.SetDownloadInitiatedCookie()
 		http.SetCookie(w, &cookieObj)
-		http.ServeFile(w, r, outputFile)
-		fmt.Printf("Providing file %s to client...\n", outputFile)
+		http.ServeFile(w, r, app.path.processedDir+outputFile)
+		fmt.Printf("Providing file %s to client...\n", app.path.processedDir+outputFile)
+		utils.RemoveFile(tempFile.Name())
+		utils.RemoveFile(app.path.processedDir + outputFile)
 	}
 }
 
 func (app *application) mainHandler19to38(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("File Upload Endpoint Hit")
-	r.ParseMultipartForm(1)
+	fmt.Println("### INFO: File Upload Endpoint Hit")
+	err := r.ParseMultipartForm(1)
+	if err != nil {
+		fmt.Println("### ERROR", err)
+		http.Error(w, "Oops! Could not parse multipart form data", http.StatusInternalServerError)
+		return
+	}
 	file, handler, err := r.FormFile("uploadFile")
 	if err != nil {
-		fmt.Println("Error Retrieving the File")
-		fmt.Println(err)
+		fmt.Println("### ERROR", err)
+		http.Error(w, "Oops! Could not get a file from the provided multipart form data", http.StatusInternalServerError)
 		return
 	}
 	defer file.Close()
-	fmt.Printf("Uploaded File: %+v\n", handler.Filename)
-	fmt.Printf("File Size: %+v\n", handler.Size)
-	fmt.Printf("MIME Header: %+v\n", handler.Header)
-	tempFile, err := ioutil.TempFile("temp-files", handler.Filename+"_upload*")
+	fmt.Printf("--- INFO: Uploaded File: %+v\n", handler.Filename)
+	fmt.Printf("--- INFO: File Size: %+v\n", handler.Size)
+	fmt.Printf("--- INFO: MIME Header: %+v\n", handler.Header)
+	tempFile, err := ioutil.TempFile(app.path.uploadedDir, handler.Filename+"_upload*")
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("### ERROR:", err)
+		http.Error(w, "Oops! Could not open a temporary file to store upload", http.StatusInternalServerError)
+		return
 	}
 	defer tempFile.Close()
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("### ERROR:", err)
+		http.Error(w, "Oops! Could not read multipart form data", http.StatusInternalServerError)
+		return
 	}
-	tempFile.Write(fileBytes)
-
-	fmt.Println("### INFO: Temp file written to", tempFile.Name())
-	cwd := utils.GetCwd() + "/"
+	_, err1 := tempFile.Write(fileBytes)
+	if err1 != nil {
+		fmt.Println("### ERROR:", err1)
+		http.Error(w, "Oops! Could not dump uploaded multipart form data into a temporary file", http.StatusInternalServerError)
+		return
+	}
+	fmt.Println("### INFO: Client-provided file was written to", tempFile.Name())
+	fileConformityStatus := utils.CheckUploadedFileConformity(tempFile.Name())
+	if fileConformityStatus != "ok" {
+		fmt.Println("### WARNING:", fileConformityStatus)
+		cookieObj := cookie.SetConformityFailedCookie()
+		http.SetCookie(w, &cookieObj)
+		utils.RemoveFile(tempFile.Name())
+		return
+	}
 	tempId := utils.GetTempId(tempFile.Name())
-	outputFile := "output-files/hg19tohg38." + tempId + ".txt"
-	genomeBuild := "hg19"
-	executableCmd := utils.MakeCmdStruct(cwd, cwd+tempFile.Name(), cwd+outputFile, genomeBuild)
+	outputFile := "hg19toHg38." + tempId + ".txt"
+	executableCmd := utils.MakeCmdStruct(app.path.cwd, tempFile.Name(), app.path.processedDir+outputFile, "hg19")
 	fmt.Println("### INFO: Compiled shell command", executableCmd.String())
-
 	errCmdRun := executableCmd.Run()
 	if errCmdRun != nil {
 		fmt.Println("### ERROR", errCmdRun)
-		fmt.Fprintln(w, "Oops! Something went wrong on the server side.")
+		http.Error(w, "Oops! Pyliftover returned a non-zero exit code", http.StatusInternalServerError)
+		utils.RemoveFile(tempFile.Name())
+		return
 	} else {
 		w.Header().Set("Content-Disposition", "attachment; filename="+outputFile)
-		w.Header().Set("Content-Type", r.Header.Get("Content-Type"))
-		w.Header().Set("Content-Length", r.Header.Get("Content-Length"))
+		w.Header().Set("Content-Type", "text/plain")
+		w.Header().Set("Content-Length", utils.GetFileSize(app.path.processedDir+outputFile))
 		cookieObj := cookie.SetDownloadInitiatedCookie()
 		http.SetCookie(w, &cookieObj)
-		http.ServeFile(w, r, outputFile)
-		fmt.Printf("Providing file %s to client...\n", outputFile)
+		http.ServeFile(w, r, app.path.processedDir+outputFile)
+		fmt.Printf("Providing file %s to client...\n", app.path.processedDir+outputFile)
+		utils.RemoveFile(tempFile.Name())
+		utils.RemoveFile(app.path.processedDir + outputFile)
 	}
 }
 
