@@ -20,23 +20,17 @@ const getCookie = function(name) {
 };
 
 let downloadTimeout;
-let trigger;
 const checkDownloadCookie = function() {
     if (getCookie("downloadStarted") === "1") {
-        setCookie("downloadStarted", 1, 1000); //Expiration could be anything... As long as we reset the value
         document.getElementById('dimmer').style.display='none';
         removeCustomAlert();
         console.log('Cookie downloadStarted=1 was retrieved and screen must become active')
-        trigger = true
     } else if (getCookie("conformityFailed") === "1") {
-        setCookie("downloadStarted", 0, 1000);
         document.getElementById('dimmer').style.display='none';
         removeCustomAlert();
         console.log('Cookie conformityFailed=1 was retrieved and screen must become active')
         createCustomAlert('Oops! The provided file did not meet the conformity criteria. Please, check your file and try again.')
-        trigger = true
     } else {
-        trigger = false
         downloadTimeout = setTimeout(checkDownloadCookie, 500); //Re-run this function
     }
 };
@@ -47,9 +41,17 @@ const cookieSettle = function() {
     checkDownloadCookie();
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function fallAsleep(period) {
+    await sleep(period);
+}
+
 const relaxWindow = function() {
     console.log('Got a change in HTTP response iframe, relaxing screen now')
     document.getElementById('dimmer').style.display='none';
-    clearTimeout(downloadTimeout)
+    fallAsleep(500).then(r => {console.log('Relaxing timeout now');clearTimeout(downloadTimeout)})
 }
 
