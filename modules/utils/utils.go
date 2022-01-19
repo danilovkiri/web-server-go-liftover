@@ -25,7 +25,7 @@ func RemoveFile(path string) {
 		fmt.Println("### ERROR:", err)
 		return
 	}
-	fmt.Printf("File %s successfully deleted", path)
+	fmt.Printf("File %s successfully deleted\n", path)
 }
 
 func GetCwd() string {

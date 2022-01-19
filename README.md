@@ -7,7 +7,7 @@ for 23andMe-formatted raw data files.
 This web application is written in Golang and utilizes [pyliftover](https://github.com/konstantint/pyliftover) with the
 code attached to a project. For more information on liftover dependencies see [documentation](./liftover/README.md).
 
-This web application uses authentication, cookies and JS. Functionality is a subject of change and improvement.
+This web application uses authentication, cookies and sessions. Functionality is a subject of change and improvement.
 
 Currently, the herein described service is available at https://65.108.154.166:4000/index/ (authentication is required
 upon file submission, credentials are currently being provided only upon request here or elsewhere).
@@ -40,7 +40,8 @@ is a template and has to be amended.
 AUTH_USERNAME=alice AUTH_PASSWORD=alice CONFIG=/path/to/config.yaml go run main.go
 ```
 
-Accessing the main page is available at `https://<serverIP>:<serverPort>/index/`
+Accessing the main page is available at `https://<serverIP>:<serverPort>/index/`. Multiple client sessions can be run
+simultaneously.
 
 ## Notes
 

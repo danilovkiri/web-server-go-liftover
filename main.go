@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"fmt"
+	"github.com/kataras/go-sessions/v3"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -63,21 +64,30 @@ func main() {
 	log.Printf("### INFO: Using CWD %s", app.path.cwd)
 	log.Printf("### INFO: Starting server on %s", srv.Addr)
 	err := srv.ListenAndServeTLS(yamlConfig.Constants.CertFile, yamlConfig.Constants.KeyFile)
-	log.Fatal(err)
+	log.Fatal("### ERROR: ", err)
 }
 
 func (app *application) mainHandler38to19(w http.ResponseWriter, r *http.Request) {
+	sess := sessions.New(sessions.Config{
+		Cookie:                      "sessionCookie",
+		Expires:                     time.Minute * 1,
+		DisableSubdomainPersistence: false,
+	})
+	s := sess.Start(w, r)
+	s.Set("name", "authorizedClientSession")
 	fmt.Println("### INFO: File Upload Endpoint Hit")
 	err := r.ParseMultipartForm(1)
 	if err != nil {
 		fmt.Println("### ERROR", err)
 		http.Error(w, "Oops! Could not parse multipart form data", http.StatusInternalServerError)
+		s.Destroy()
 		return
 	}
 	file, handler, err := r.FormFile("uploadFile")
 	if err != nil {
 		fmt.Println("### ERROR", err)
 		http.Error(w, "Oops! Could not get a file from the provided multipart form data", http.StatusInternalServerError)
+		s.Destroy()
 		return
 	}
 	defer file.Close()
@@ -88,6 +98,7 @@ func (app *application) mainHandler38to19(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		fmt.Println("### ERROR:", err)
 		http.Error(w, "Oops! Could not open a temporary file to store upload", http.StatusInternalServerError)
+		s.Destroy()
 		return
 	}
 	defer tempFile.Close()
@@ -95,12 +106,14 @@ func (app *application) mainHandler38to19(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		fmt.Println("### ERROR:", err)
 		http.Error(w, "Oops! Could not read multipart form data", http.StatusInternalServerError)
+		s.Destroy()
 		return
 	}
 	_, err1 := tempFile.Write(fileBytes)
 	if err1 != nil {
 		fmt.Println("### ERROR:", err1)
 		http.Error(w, "Oops! Could not dump uploaded multipart form data into a temporary file", http.StatusInternalServerError)
+		s.Destroy()
 		return
 	}
 	fmt.Println("### INFO: Client-provided file was written to", tempFile.Name())
@@ -110,6 +123,7 @@ func (app *application) mainHandler38to19(w http.ResponseWriter, r *http.Request
 		cookieObj := cookie.SetConformityFailedCookie()
 		http.SetCookie(w, &cookieObj)
 		utils.RemoveFile(tempFile.Name())
+		s.Destroy()
 		return
 	}
 	tempId := utils.GetTempId(tempFile.Name())
@@ -121,6 +135,7 @@ func (app *application) mainHandler38to19(w http.ResponseWriter, r *http.Request
 		fmt.Println("### ERROR", errCmdRun)
 		http.Error(w, "Oops! Pyliftover returned a non-zero exit code", http.StatusInternalServerError)
 		utils.RemoveFile(tempFile.Name())
+		s.Destroy()
 		return
 	} else {
 		w.Header().Set("Content-Disposition", "attachment; filename="+outputFile)
@@ -129,24 +144,34 @@ func (app *application) mainHandler38to19(w http.ResponseWriter, r *http.Request
 		cookieObj := cookie.SetDownloadInitiatedCookie()
 		http.SetCookie(w, &cookieObj)
 		http.ServeFile(w, r, app.path.processedDir+outputFile)
-		fmt.Printf("Providing file %s to client...\n", app.path.processedDir+outputFile)
+		fmt.Printf("Successfully provided client with file %s\n", outputFile)
 		utils.RemoveFile(tempFile.Name())
 		utils.RemoveFile(app.path.processedDir + outputFile)
+		s.Destroy()
 	}
 }
 
 func (app *application) mainHandler19to38(w http.ResponseWriter, r *http.Request) {
+	sess := sessions.New(sessions.Config{
+		Cookie:                      "sessionCookie",
+		Expires:                     time.Minute * 1,
+		DisableSubdomainPersistence: false,
+	})
+	s := sess.Start(w, r)
+	s.Set("name", "authorizedClientSession")
 	fmt.Println("### INFO: File Upload Endpoint Hit")
 	err := r.ParseMultipartForm(1)
 	if err != nil {
 		fmt.Println("### ERROR", err)
 		http.Error(w, "Oops! Could not parse multipart form data", http.StatusInternalServerError)
+		s.Destroy()
 		return
 	}
 	file, handler, err := r.FormFile("uploadFile")
 	if err != nil {
 		fmt.Println("### ERROR", err)
 		http.Error(w, "Oops! Could not get a file from the provided multipart form data", http.StatusInternalServerError)
+		s.Destroy()
 		return
 	}
 	defer file.Close()
@@ -157,6 +182,7 @@ func (app *application) mainHandler19to38(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		fmt.Println("### ERROR:", err)
 		http.Error(w, "Oops! Could not open a temporary file to store upload", http.StatusInternalServerError)
+		s.Destroy()
 		return
 	}
 	defer tempFile.Close()
@@ -164,12 +190,14 @@ func (app *application) mainHandler19to38(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		fmt.Println("### ERROR:", err)
 		http.Error(w, "Oops! Could not read multipart form data", http.StatusInternalServerError)
+		s.Destroy()
 		return
 	}
 	_, err1 := tempFile.Write(fileBytes)
 	if err1 != nil {
 		fmt.Println("### ERROR:", err1)
 		http.Error(w, "Oops! Could not dump uploaded multipart form data into a temporary file", http.StatusInternalServerError)
+		s.Destroy()
 		return
 	}
 	fmt.Println("### INFO: Client-provided file was written to", tempFile.Name())
@@ -179,6 +207,7 @@ func (app *application) mainHandler19to38(w http.ResponseWriter, r *http.Request
 		cookieObj := cookie.SetConformityFailedCookie()
 		http.SetCookie(w, &cookieObj)
 		utils.RemoveFile(tempFile.Name())
+		s.Destroy()
 		return
 	}
 	tempId := utils.GetTempId(tempFile.Name())
@@ -190,6 +219,7 @@ func (app *application) mainHandler19to38(w http.ResponseWriter, r *http.Request
 		fmt.Println("### ERROR", errCmdRun)
 		http.Error(w, "Oops! Pyliftover returned a non-zero exit code", http.StatusInternalServerError)
 		utils.RemoveFile(tempFile.Name())
+		s.Destroy()
 		return
 	} else {
 		w.Header().Set("Content-Disposition", "attachment; filename="+outputFile)
@@ -198,9 +228,10 @@ func (app *application) mainHandler19to38(w http.ResponseWriter, r *http.Request
 		cookieObj := cookie.SetDownloadInitiatedCookie()
 		http.SetCookie(w, &cookieObj)
 		http.ServeFile(w, r, app.path.processedDir+outputFile)
-		fmt.Printf("Providing file %s to client...\n", app.path.processedDir+outputFile)
+		fmt.Printf("Successfully provided client with file %s\n", outputFile)
 		utils.RemoveFile(tempFile.Name())
 		utils.RemoveFile(app.path.processedDir + outputFile)
+		s.Destroy()
 	}
 }
 
