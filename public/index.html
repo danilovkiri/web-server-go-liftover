@@ -10,51 +10,52 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="shortcut icon" type="image/x-icon" href="resources/dna_icon.ico" />
     <link rel="stylesheet" type="text/css" href="css/basic.css">
-    <link rel="stylesheet" type="text/css" href="css/animation.css">
     <title>Document</title>
 </head>
 
 <body>
 
-<div class="header">
+<header>
     <a href="index.html">UCSC LiftOver Service<br></a>
-    <button type="button" class="collapsibleInfo">Note</button>
-    <div class="infoContent">
+    <button class="collapsibleInfo">Note</button>
+    <div id="infoContent">
         <p>Accepts for 23andMe-formatted raw data plain text files with 4 tab-separated columns in accordance with the
             scheme: rsID, CHROM, POS, GT.<br>Header lines (prefixed with #) are optional and ignored.<br>Authentication
             is required. </p>
     </div>
-</div>
+</header>
 
-<div class="contentLeft">
-    <button id="hg38tohg19button" class="collapsibleButton" >Hg38toHg19</button>
-    <div class="buttonContent">
-        <p>Convert hg38 (GRCh38) to hg19 (GRCh37)</p>
+<main>
+    <div class="content" id="contentLeft">
+        <button class="collapsibleButton" id="hg38tohg19button">Hg38toHg19</button>
+        <div class="buttonContent">
+            <p>Convert hg38 (GRCh38) to hg19 (GRCh37)</p>
+        </div>
+        <script type="text/javascript">
+            document.getElementById("hg38tohg19button").onclick = function () {
+                location.href = "/index/hg38to19.html";
+            };
+        </script>
     </div>
-    <script type="text/javascript">
-        document.getElementById("hg38tohg19button").onclick = function () {
-            location.href = "/index/hg38to19.html";
-        };
-    </script>
-</div>
-<div class="contentRight">
-    <button id="hg19tohg38button" class="collapsibleButton" >Hg19toHg38</button>
-    <div class="buttonContent">
-        <p>Convert hg19 (GRCh37) to hg38 (GRCh38)</p>
+    <div class="content" id="contentRight">
+        <button class="collapsibleButton" id="hg19tohg38button">Hg19toHg38</button>
+        <div class="buttonContent">
+            <p>Convert hg19 (GRCh37) to hg38 (GRCh38)</p>
+        </div>
+        <script type="text/javascript">
+            document.getElementById("hg19tohg38button").onclick = function () {
+                location.href = "/index/hg19to38.html";
+            };
+        </script>
     </div>
-    <script type="text/javascript">
-        document.getElementById("hg19tohg38button").onclick = function () {
-            location.href = "/index/hg19to38.html";
-        };
-    </script>
-</div>
+</main>
 
-<div class="bottom">
+
+<footer>
     <p><a href="index.html" class="active-main-button-bottom">Main page</a></p>
     <p><a href="https://github.com/konstantint/pyliftover">Pyliftover GitHub</a></p>
     <p>Maintenance and bugs: <a href="https://github.com/danilovkiri/web-server-go-liftover">GitHub</a></p>
-
-</div>
+</footer>
 
 <script src="js/collapsibleInfo.js"></script>
 <script src="js/collapsibleButton.js"></script>
