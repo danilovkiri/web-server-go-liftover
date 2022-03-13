@@ -1,0 +1,251 @@
+#canvas{
+    width: 15vw;
+    height: 25vw;
+    margin: 0 0;
+    position: absolute;
+    top: 13vw;
+    left: 5vw;
+    align-items: center;
+    vertical-align: middle;
+    text-align: center;
+    transition-duration: 0.5s;
+    transition-property: transform;
+}
+
+.wrapper {
+    position: relative;
+    height: 13vw;
+    width: 7vw;
+    margin: 25% auto;
+}
+
+
+.body{
+    position: absolute;
+    visibility: visible;
+    background-color: #8c918e;
+    height: 13vw;
+    width: 7vw;
+    border-top-right-radius: 100%;
+    border-top-left-radius: 100%;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    border-top: 0.5vw solid #a75248;
+    z-index: 1;
+}
+
+#window-outer{
+    position: absolute;
+    visibility: visible;
+    width: 3.5vw;
+    height: 3.5vw;
+    border-radius: 100%;
+    background-color: #b4b2b2;
+    left: calc(50% - 1.75vw);
+    top: calc(0% + 1.25vw);
+    border: 0;
+    z-index: 2;
+}
+
+#window-inner{
+    position: absolute;
+    visibility: visible;
+    width: 3vw;
+    height: 3vw;
+    border-radius: 100%;
+    background-color: #a75248;
+    left: calc(50% - 1.5vw);
+    top: calc(0% + 1.5vw);
+    border: 0;
+    z-index: 2;
+}
+
+
+.fin-left {
+    position: absolute;
+    visibility: visible;
+    height: 4.5vw;
+    width: 4vw;
+    background-color: #a75248;
+    left: -2.5vw;
+    top: calc(100% - 4.5vw);
+    border-top-left-radius: 80%;
+    border-bottom-left-radius: 20%;
+}
+.fin-right {
+    position: absolute;
+    visibility: visible;
+    height: 4.5vw;
+    width: 4vw;
+    background-color: #a75248;
+    right: -2.5vw;
+    top: calc(100% - 4.5vw);
+    border-top-right-radius: 80%;
+    border-bottom-right-radius: 20%;
+}
+
+.exhaust-flame {
+    position: absolute;
+    top: 100%;
+    width: 40%;
+    background: linear-gradient(to top, transparent 10%, #a75248 100%);
+    height: 50%;
+    left: 30%;
+    z-index: -100;
+    animation: exhaust 0.2s infinite;
+    visibility: hidden;
+}
+
+.exhaust-fumes {
+    position: absolute;
+    background: #a75248;
+    left: 30%;
+    visibility: hidden;
+    border-radius: 100%;
+    background: white;
+}
+
+#exhaust-fumes-1 {
+    position: absolute;
+    top: 130%;
+    width: 4.5vw;
+    height: 4.5vw;
+    left: 30%;
+    border-radius: 100%;
+    animation: fumes 4s infinite;
+}
+
+#exhaust-fumes-2 {
+    position: absolute;
+    top: 110%;
+    width: 6vw;
+    height: 6vw;
+    left: -30%;
+    border-radius: 100%;
+    animation: fumes 2s infinite;
+}
+
+#exhaust-fumes-3 {
+    position: absolute;
+    top: 110%;
+    width: 10vw;
+    height: 10vw;
+    left: 60%;
+    border-radius: 100%;
+    animation: fumes 3s infinite;
+}
+
+#exhaust-fumes-4 {
+    position: absolute;
+    top: 160%;
+    width: 7vw;
+    height: 7vw;
+    left: -30%;
+    border-radius: 100%;
+    animation: fumes 4s infinite;
+}
+
+#exhaust-fumes-5 {
+    position: absolute;
+    top: 140%;
+    width: 7vw;
+    height: 7vw;
+    left: -15%;
+    border-radius: 100%;
+    animation: fumes 1s infinite;
+}
+
+.moving-space {
+    position: absolute;
+    visibility: hidden;
+    width: 1px;
+    background: white;
+    z-index: 100;
+}
+
+#line1 {
+    top: -50%;
+    left: -50%;
+    position: absolute;
+    width: 1px;
+    z-index: 100;
+    animation: line-move 3s infinite linear;
+}
+
+#line2 {
+    top: -50%;
+    left: 150%;
+    position: absolute;
+    width: 1px;
+    z-index: 100;
+    animation: line-move 2s infinite linear;
+}
+
+#line3 {
+    top: -50%;
+    left: 180%;
+    position: absolute;
+    width: 1px;
+    z-index: 100;
+    animation: line-move 1s infinite linear;
+}
+
+#line4 {
+    top: -10%;
+    left: -80%;
+    position: absolute;
+    width: 1px;
+    z-index: 100;
+    animation: line-move 4s infinite linear;
+}
+
+@keyframes line-move{
+    0%{
+        height: 0;
+    }
+    100%{
+        top: 100%;
+        height: 100%; opacity: 0;
+    }
+}
+
+@keyframes fumes {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1.5);
+        background-color: transparent;
+    }
+}
+
+@keyframes bounce {
+    0% {
+        transform: translate3d(0px, 0px, 0);
+    }
+    50% {
+        transform: translate3d(0px, -3%, 0);
+    }
+    100% {
+        transform: translate3d(0px, 0px, 0);
+    }
+}
+
+@keyframes exhaust {
+    0% {
+        background: linear-gradient(to top, transparent 20%, #a75248 100%);
+    }
+    33% {
+        background: linear-gradient(to top, transparent 10%, #a75248 100%);
+    }
+    66% {
+        background: linear-gradient(to top, transparent 30%, #a75248 100%);
+    }
+}
+
+@keyframes twinkle {
+    80% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+}

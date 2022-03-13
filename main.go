@@ -54,8 +54,8 @@ func main() {
 		Addr:         fmt.Sprintf("%v:%v", yamlConfig.Constants.ServerIP, yamlConfig.Constants.ServerPort),
 		Handler:      mux,
 		IdleTimeout:  time.Minute,
-		ReadTimeout:  30 * time.Second,
-		WriteTimeout: 30 * time.Second,
+		ReadTimeout:  60 * time.Second,
+		WriteTimeout: 60 * time.Second,
 	}
 
 	utils.MakeDir(yamlConfig.Constants.FileStorage)

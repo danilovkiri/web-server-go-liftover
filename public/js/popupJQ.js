@@ -3,7 +3,7 @@ const ALERT_BUTTON_TEXT = "OK";
 
 if(document.getElementById) {
     window.alert = function() {
-        const ALERT_TEXT = "Your file is being generated, do not leave this page. Approx ETA — 20 sec";
+        const ALERT_TEXT = "Your file is being generated, do not leave this page. Approx ETA — 30 sec";
         createCustomAlert(ALERT_TEXT);
     }
 }

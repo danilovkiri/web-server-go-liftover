@@ -1,10 +1,13 @@
 html, body {
-    margin: 0;
     text-align: center;
-    background-color: white;
+    background-color: #d7d7d7;
     color: #8c918e;
     font-size: 15px;
     font-family: Helvetica;
+}
+
+main {
+    height: 50vw;
 }
 
 header, footer {
@@ -86,34 +89,37 @@ footer a:hover {
     color: white;
 }
 
-iframe {
-    border-width: 0;
-    height: 60px;
-    width: 300px;
-}
-
 .content {
     width: 50%;
-    background-color: rgba(255, 255, 255, 0);
 }
 
 #contentLeft {
     float: left;
 }
 
+#contentLeft label {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    margin-left: 30vw;
+}
+
 #contentLeft button {
     margin-left: 30vw;
 }
 
-/*#contentLeft  {*/
-/*    margin-left: 30vw;*/
-/*}*/
+#contentLeft div {
+    margin-left: 30vw;
+}
 
 #contentRight {
     float: right
 }
 
 #contentRight button {
+    margin-right: 30vw;
+}
+
+#contentRight div {
     margin-right: 30vw;
 }
 
@@ -136,13 +142,16 @@ iframe {
 }
 
 .buttonContent {
-    width: 11vw;
-    border-radius: 10px;
-    margin: 0 auto;
     font-size: 1.6vw;
+    max-height: 0;
+    width: 11vw;
+    margin: 0 auto;
+    text-align: center;
+    border: 0;
+    border-radius: 10px;
     background-color: #404044;
     opacity: 0.75;
-    max-height: 0;
+    display: inline-block;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
 }
@@ -174,9 +183,9 @@ iframe {
 
 .uploadFileMetadata {
     font-size: 1.3vw;
-    position: relative;
-    margin-top: 23vh;
-    width: 31vw;
+    position: absolute;
+    margin-top: 25vh;
+    width: 30.55vw;
     height: 7vw;
     background-color: #404044;
     border-radius: 10px;
@@ -187,4 +196,14 @@ iframe {
 
 .uploadFileMetadata p {
     padding-top: 2.7vw;
+    margin: 0;
+}
+
+iframe {
+    position: absolute;
+    margin-top: 40vh;
+    border-width: 0;
+    width: 30.55vw;
+    height: 7vw;
+    transform: translate(-50%,-50%);
 }
