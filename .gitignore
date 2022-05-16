@@ -1,10 +1,9 @@
 .idea
 venv
-localhost.pem
-localhost-key.pem
-file-storage
 liftover/pyliftover/__pycache__
 public/.DS_Store
 liftover/__pycache__
 .DS_Store
-local-config.yaml
+internal/config/resources/localhost-key.pem
+internal/config/resources/localhost.pem
+cmd/server/filestoragedir
