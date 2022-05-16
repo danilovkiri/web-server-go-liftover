@@ -10,44 +10,37 @@ import (
 	"strings"
 )
 
-func MakeDir(path string) {
+func MakeDir(path string) error {
 	err := os.Mkdir(path, 0755)
-	if os.IsExist(err) {
-		fmt.Println("### WARNING: Path already exists")
-	} else if err != nil {
-		log.Fatal("### ERROR:", err)
+	if err != nil && os.IsExist(err) {
+		log.Printf("Path %s already exists\n", path)
+		return nil
 	}
+	return err
 }
 
 func RemoveFile(path string) {
 	err := os.Remove(path)
 	if err != nil {
-		fmt.Println("### ERROR:", err)
+		log.Println(err)
 		return
 	}
 	fmt.Printf("File %s successfully deleted\n", path)
 }
 
-func GetCwd() string {
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Panic("### ERROR: ", err)
-	}
-	return dir
-}
-
 func GetFileSize(inputFile string) string {
 	fi, err := os.Stat(inputFile)
 	if err != nil {
-		log.Panic("### ERROR: ", err)
+		log.Println(err)
+		return "0"
 	}
-	return string(fi.Size())
+	return strconv.FormatInt(fi.Size(), 10)
 }
 
 func MakeCmdStruct(cwd string, inputFile string, outputFile string, sourceBuild string) exec.Cmd {
 	cmdGo := exec.Cmd{
-		Path:   cwd + "/" + "liftover/main.py",
-		Args:   []string{cwd + "/" + "liftover/main.py", inputFile, outputFile, sourceBuild},
+		Path:   cwd + "/../../" + "liftover/main.py",
+		Args:   []string{cwd + "/../../" + "liftover/main.py", inputFile, outputFile, sourceBuild},
 		Stdout: os.Stdout,
 		Stderr: os.Stderr,
 	}
@@ -73,33 +66,32 @@ func CheckUploadedFileConformity(inputFile string) string {
 		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "X", "Y", "MT"}
 	status := "ok"
 	file, err := os.Open(inputFile)
+	defer file.Close()
 	if err != nil {
 		log.Fatal("### ERROR: ", err)
 	}
-	defer file.Close()
 	reader := bufio.NewScanner(file)
 	for reader.Scan() {
 		if strings.Split(reader.Text(), "\t")[0][0:1] == "#" {
 			continue
-		} else {
-			oneLine := strings.Split(reader.Text(), "\t")
-			if len(oneLine) != 4 {
-				status := "invalid format"
-				return status
-			} else {
-				chrom := oneLine[1]
-				if !stringInSlice(chrom, plausibleChromosomes) {
-					status := "invalid format"
-					return status
-				}
-				pos := oneLine[2]
-				_, err := strconv.Atoi(pos)
-				if err != nil {
-					status := "invalid format"
-					return status
-				}
-			}
 		}
+		oneLine := strings.Split(reader.Text(), "\t")
+		if len(oneLine) != 4 {
+			status := "invalid format"
+			return status
+		}
+		chrom := oneLine[1]
+		if !stringInSlice(chrom, plausibleChromosomes) {
+			status := "invalid format"
+			return status
+		}
+		pos := oneLine[2]
+		_, err := strconv.Atoi(pos)
+		if err != nil {
+			status := "invalid format"
+			return status
+		}
+
 	}
 	return status
 }

@@ -46,7 +46,7 @@ simultaneously.
 ## Notes
 
 ### Config
-The [config.yaml](./resources/example-config.yaml) file implements the following self-explanatory structure:
+The [config.yaml](./internal/config/resources/defaultConfig.yaml) file implements the following self-explanatory structure:
 ```yaml
 constants:
   certFile: /path/to/localhost.pem
