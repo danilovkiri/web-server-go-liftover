@@ -1,5 +1,5 @@
 '''
-Pure-python implementation of UCSC "liftover" genome coordinate conversion.
+Pure-python implementation of UCSC "pyliftover" genome coordinate conversion.
 Main class, which is actually a convenience wrapper around chainfile.py's LiftOverChainFile
 
 Copyright 2013, Konstantin Tretyakov.

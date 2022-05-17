@@ -12,7 +12,8 @@ main {
 
 header, footer {
     background-color: #404044;
-    color: #8c918e
+    color: #8c918e;
+    z-index: 100;
 }
 
 a[href] {

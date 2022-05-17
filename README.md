@@ -5,7 +5,7 @@ The project contains back-end and front-end source code for a web application pr
 for 23andMe-formatted raw data files.
 
 This web application is written in Golang and utilizes [pyliftover](https://github.com/konstantint/pyliftover) with the
-code attached to a project. For more information on liftover dependencies see [documentation](./liftover/README.md).
+code attached to a project. For more information on liftover dependencies see [documentation](pyliftover/README.md).
 
 This web application uses authentication, cookies and sessions. Functionality is a subject of change and improvement.
 
@@ -34,10 +34,13 @@ rs200599638	1	817538	GG
 
 ## Running
 To start the local server run the following command in a terminal specifying `AUTH_USERNAME`, `AUTH_PASSWORD` and a
-path (either relative or absolute) to a configuration file `CONFIG`. Note that [example-config.yaml](./resources/example-config.yaml)
-is a template and has to be amended.
+path (either relative or absolute) to a configuration file `CONFIG`. Note that
+[defaultConfig.yaml](internal/config/resources/defaultConfig.yaml) is a template and has to be amended.
+
+`AUTH_USERNAME` and `AUTH_PASSWORD` are required, `CONFIG` has a default value pointing to
+[defaultConfig.yaml](internal/config/resources/defaultConfig.yaml).
 ```bash
-AUTH_USERNAME=alice AUTH_PASSWORD=alice CONFIG=/path/to/config.yaml go run main.go
+AUTH_USERNAME=alice AUTH_PASSWORD=alice CONFIG=/path/to/config.yaml go run cmd/server/main.go
 ```
 
 Accessing the main page is available at `https://<serverIP>:<serverPort>/index/`. Multiple client sessions can be run
@@ -46,7 +49,7 @@ simultaneously.
 ## Notes
 
 ### Config
-The [config.yaml](./resources/example-config.yaml) file implements the following self-explanatory structure:
+The [config.yaml](./internal/config/resources/defaultConfig.yaml) file implements the following self-explanatory structure:
 ```yaml
 constants:
   certFile: /path/to/localhost.pem

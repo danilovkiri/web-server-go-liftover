@@ -1,5 +1,5 @@
 '''
-Pure-python implementation of UCSC "liftover" genome coordinate conversion.
+Pure-python implementation of UCSC "pyliftover" genome coordinate conversion.
 Class for dealing with "xx.over.chain" files.
 
 Copyright 2013, Konstantin Tretyakov.
@@ -33,7 +33,7 @@ else:
 
 def open_liftover_chain_file(from_db, to_db, search_dir='.', cache_dir=os.path.expanduser("~/.pyliftover"), use_web=True, write_cache=True):
     '''
-    A "smart" way of obtaining liftover chain files.
+    A "smart" way of obtaining pyliftover chain files.
     By default acts as follows:
      1. If the file ``<from_db>To<to_db>.over.chain.gz`` exists in <search_dir>,
         opens it for reading via gzip.open.
