@@ -40,8 +40,10 @@ path (either relative or absolute) to a configuration file `CONFIG`. Note that
 `AUTH_USERNAME` and `AUTH_PASSWORD` are required, `CONFIG` has a default value pointing to
 [defaultConfig.yaml](internal/config/resources/defaultConfig.yaml).
 ```bash
-AUTH_USERNAME=alice AUTH_PASSWORD=alice CONFIG=/path/to/config.yaml go run cmd/server/main.go
+AUTH_USERNAME=alice AUTH_PASSWORD=alice CONFIG=/path/to/config.yaml go run main.go
 ```
+
+The command must be executed from inside the [cmd/server](cmd/server) directory.
 
 Accessing the main page is available at `https://<serverIP>:<serverPort>/index/`. Multiple client sessions can be run
 simultaneously.
