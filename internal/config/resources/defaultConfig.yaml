@@ -1,6 +1,6 @@
 constants:
   certFile: ../../internal/config/resources/localhost.pem
   keyFile: ../../internal/config/resources/localhost-key.pem
-  serverIP: 192.168.1.72
+  serverIP: 192.168.11.142
   serverPort: 4000
   fileStorage: ./filestoragedir

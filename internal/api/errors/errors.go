@@ -1,3 +1,4 @@
+// Package errors defines constants to be used in API error descriptions.
 package errors
 
 const (

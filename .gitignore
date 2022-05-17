@@ -1,8 +1,8 @@
 .idea
 venv
-liftover/pyliftover/__pycache__
+pyliftover/pyliftover/__pycache__
 public/.DS_Store
-liftover/__pycache__
+pyliftover/__pycache__
 .DS_Store
 internal/config/resources/localhost-key.pem
 internal/config/resources/localhost.pem

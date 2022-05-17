@@ -1,3 +1,4 @@
+// Package utils provides miscellaneous functionality.
 package utils
 
 import (
@@ -5,11 +6,11 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"strconv"
 	"strings"
 )
 
+// MakeDir creates a directory specified by a path.
 func MakeDir(path string) error {
 	err := os.Mkdir(path, 0755)
 	if err != nil && os.IsExist(err) {
@@ -19,6 +20,7 @@ func MakeDir(path string) error {
 	return err
 }
 
+// RemoveFile removes a file specified by a path.
 func RemoveFile(path string) {
 	err := os.Remove(path)
 	if err != nil {
@@ -28,6 +30,7 @@ func RemoveFile(path string) {
 	fmt.Printf("File %s successfully deleted\n", path)
 }
 
+// GetFileSize provides byte size of a file specified by a path.
 func GetFileSize(inputFile string) string {
 	fi, err := os.Stat(inputFile)
 	if err != nil {
@@ -37,21 +40,13 @@ func GetFileSize(inputFile string) string {
 	return strconv.FormatInt(fi.Size(), 10)
 }
 
-func MakeCmdStruct(cwd string, inputFile string, outputFile string, sourceBuild string) exec.Cmd {
-	cmdGo := exec.Cmd{
-		Path:   cwd + "/../../" + "liftover/main.py",
-		Args:   []string{cwd + "/../../" + "liftover/main.py", inputFile, outputFile, sourceBuild},
-		Stdout: os.Stdout,
-		Stderr: os.Stderr,
-	}
-	return cmdGo
-}
-
+// GetTempId retrieves temp identifier of a temp file specified by a path.
 func GetTempId(inputFile string) string {
 	splitName := strings.Split(inputFile, "_upload")
 	return splitName[1]
 }
 
+// stringInSlice returns True string is contained in a slice of strings.
 func stringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {
@@ -61,14 +56,14 @@ func stringInSlice(a string, list []string) bool {
 	return false
 }
 
+// CheckUploadedFileConformity checks whether the provided file complies with specified conformity criteria.
 func CheckUploadedFileConformity(inputFile string) string {
 	plausibleChromosomes := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
 		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "X", "Y", "MT"}
-	status := "ok"
 	file, err := os.Open(inputFile)
 	defer file.Close()
 	if err != nil {
-		log.Fatal("### ERROR: ", err)
+		return "invalid format"
 	}
 	reader := bufio.NewScanner(file)
 	for reader.Scan() {
@@ -77,21 +72,18 @@ func CheckUploadedFileConformity(inputFile string) string {
 		}
 		oneLine := strings.Split(reader.Text(), "\t")
 		if len(oneLine) != 4 {
-			status := "invalid format"
-			return status
+			return "invalid format"
 		}
 		chrom := oneLine[1]
 		if !stringInSlice(chrom, plausibleChromosomes) {
-			status := "invalid format"
-			return status
+			return "invalid format"
 		}
 		pos := oneLine[2]
 		_, err := strconv.Atoi(pos)
 		if err != nil {
-			status := "invalid format"
-			return status
+			return "invalid format"
 		}
 
 	}
-	return status
+	return "ok"
 }

@@ -1,13 +1,14 @@
+// Package config provides ENV and YAML parsing functionality.
 package config
 
 import (
 	"github.com/caarlos0/env/v6"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
+// Application defines a set of app parameters and their parsing from ENV.
 type Application struct {
 	Auth struct {
 		Username string `env:"AUTH_USERNAME,required"`
@@ -20,6 +21,7 @@ type Application struct {
 	}
 }
 
+// ServerConfig defines a set of server parameters and their parsing from YAML.
 type ServerConfig struct {
 	Constants struct {
 		CertFile    string `yaml:"certFile"`
@@ -31,6 +33,7 @@ type ServerConfig struct {
 	ConfigFile string `env:"CONFIG" envDefault:"../../internal/config/resources/defaultConfig.yaml"`
 }
 
+// NewConfiguration parses YAML and ENV filling the configuration object.
 func NewConfiguration() (*ServerConfig, *Application, error) {
 	cfg := ServerConfig{}
 	err := env.Parse(&cfg)
@@ -54,8 +57,7 @@ func NewConfiguration() (*ServerConfig, *Application, error) {
 	app.Path.ProcessedDir = cfg.Constants.FileStorage + "/processed-files/"
 	app.Path.Cwd, err = os.Getwd()
 	if err != nil {
-		log.Fatal(err)
+		return nil, nil, err
 	}
-
 	return &cfg, &app, nil
 }

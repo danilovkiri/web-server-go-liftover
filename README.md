@@ -5,7 +5,7 @@ The project contains back-end and front-end source code for a web application pr
 for 23andMe-formatted raw data files.
 
 This web application is written in Golang and utilizes [pyliftover](https://github.com/konstantint/pyliftover) with the
-code attached to a project. For more information on liftover dependencies see [documentation](./liftover/README.md).
+code attached to a project. For more information on liftover dependencies see [documentation](pyliftover/README.md).
 
 This web application uses authentication, cookies and sessions. Functionality is a subject of change and improvement.
 

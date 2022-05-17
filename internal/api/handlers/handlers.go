@@ -1,3 +1,4 @@
+// Package handlers defines handle functions for endpoint listening and processing.
 package handlers
 
 import (
@@ -9,21 +10,27 @@ import (
 	"log"
 	"net/http"
 	"time"
+
 	"webServerGoLiftover/internal/api/errors"
 	"webServerGoLiftover/internal/config"
 	"webServerGoLiftover/internal/cookie"
+	"webServerGoLiftover/internal/service/liftover"
 	"webServerGoLiftover/internal/utils"
 )
 
+// URLHandler defines URLHandler object structure.
 type URLHandler struct {
+	converter    liftover.Converter
 	serverConfig *config.ServerConfig
 	app          *config.Application
 }
 
-func InitURLHandler(serverConfig *config.ServerConfig, app *config.Application) *URLHandler {
-	return &URLHandler{serverConfig: serverConfig, app: app}
+// InitURLHandler initializes URLHandler object setting its attributes.
+func InitURLHandler(serverConfig *config.ServerConfig, app *config.Application, converter liftover.Converter) *URLHandler {
+	return &URLHandler{serverConfig: serverConfig, app: app, converter: converter}
 }
 
+// MainHandler38to19 handles file upload, processing and provision for hg38-to-hg19 scheme.
 func (h *URLHandler) MainHandler38to19(w http.ResponseWriter, r *http.Request) {
 	log.Println("### INFO: File Upload Endpoint Hit")
 	sess := sessions.New(sessions.Config{
@@ -75,11 +82,8 @@ func (h *URLHandler) MainHandler38to19(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookieObj)
 		return
 	}
-	tempId := utils.GetTempId(tempFile.Name())
-	outputFile := "hg38toHg19." + tempId + ".txt"
-	executableCmd := utils.MakeCmdStruct(h.app.Path.Cwd, tempFile.Name(), h.app.Path.ProcessedDir+outputFile, "hg38")
-	log.Println("Compiled shell command:", executableCmd.String())
-	err = executableCmd.Run()
+	outputFile := "hg38toHg19." + utils.GetTempId(tempFile.Name()) + ".txt"
+	err = h.converter.Convert38to19(h.app.Path.Cwd, tempFile.Name(), h.app.Path.ProcessedDir+outputFile)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, errors.PyliftoverNonzeroExitError, http.StatusInternalServerError)
@@ -95,6 +99,7 @@ func (h *URLHandler) MainHandler38to19(w http.ResponseWriter, r *http.Request) {
 	utils.RemoveFile(h.app.Path.ProcessedDir + outputFile)
 }
 
+// MainHandler19to38 handles file upload, processing and provision for hg19-to-hg38 scheme.
 func (h *URLHandler) MainHandler19to38(w http.ResponseWriter, r *http.Request) {
 	log.Println("### INFO: File Upload Endpoint Hit")
 	sess := sessions.New(sessions.Config{
@@ -146,11 +151,8 @@ func (h *URLHandler) MainHandler19to38(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookieObj)
 		return
 	}
-	tempId := utils.GetTempId(tempFile.Name())
-	outputFile := "hg19toHg38." + tempId + ".txt"
-	executableCmd := utils.MakeCmdStruct(h.app.Path.Cwd, tempFile.Name(), h.app.Path.ProcessedDir+outputFile, "hg19")
-	log.Println("Compiled shell command:", executableCmd.String())
-	err = executableCmd.Run()
+	outputFile := "hg19toHg38." + utils.GetTempId(tempFile.Name()) + ".txt"
+	err = h.converter.Convert19to38(h.app.Path.Cwd, tempFile.Name(), h.app.Path.ProcessedDir+outputFile)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, errors.PyliftoverNonzeroExitError, http.StatusInternalServerError)
@@ -166,6 +168,7 @@ func (h *URLHandler) MainHandler19to38(w http.ResponseWriter, r *http.Request) {
 	utils.RemoveFile(h.app.Path.ProcessedDir + outputFile)
 }
 
+// Authorizer provides middleware authorization for file upload endpoints.
 func (h *URLHandler) Authorizer(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		username, password, ok := r.BasicAuth()

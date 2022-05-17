@@ -15,19 +15,18 @@ import (
 )
 
 func main() {
+	// set context
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-
+	// define a waitGroup
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
-
+	// parse configuration
 	cfg, app, err := config.NewConfiguration()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	log.Println(cfg)
-
+	// make necessary directories
 	err = utils.MakeDir(cfg.Constants.FileStorage)
 	if err != nil {
 		log.Fatal(err)
@@ -41,8 +40,7 @@ func main() {
 		log.Fatal(err)
 	}
 	server := api.InitServer(cfg, app)
-
-	// set a listener for os.Signal
+	// set a graceful shutdown listener
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
@@ -57,7 +55,6 @@ func main() {
 		log.Print("Server shutdown succeeded")
 		cancel()
 	}()
-
 	// start up the server
 	log.Println("Server start attempted")
 	if err := server.ListenAndServeTLS(cfg.Constants.CertFile, cfg.Constants.KeyFile); err != nil && err != http.ErrServerClosed {
