@@ -34,10 +34,13 @@ rs200599638	1	817538	GG
 
 ## Running
 To start the local server run the following command in a terminal specifying `AUTH_USERNAME`, `AUTH_PASSWORD` and a
-path (either relative or absolute) to a configuration file `CONFIG`. Note that [example-config.yaml](./resources/example-config.yaml)
-is a template and has to be amended.
+path (either relative or absolute) to a configuration file `CONFIG`. Note that
+[defaultConfig.yaml](internal/config/resources/defaultConfig.yaml) is a template and has to be amended.
+
+`AUTH_USERNAME` and `AUTH_PASSWORD` are required, `CONFIG` has a default value pointing to
+[defaultConfig.yaml](internal/config/resources/defaultConfig.yaml).
 ```bash
-AUTH_USERNAME=alice AUTH_PASSWORD=alice CONFIG=/path/to/config.yaml go run main.go
+AUTH_USERNAME=alice AUTH_PASSWORD=alice CONFIG=/path/to/config.yaml go run cmd/server/main.go
 ```
 
 Accessing the main page is available at `https://<serverIP>:<serverPort>/index/`. Multiple client sessions can be run
