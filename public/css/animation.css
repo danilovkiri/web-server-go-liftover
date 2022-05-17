@@ -3,7 +3,7 @@
     height: 25vw;
     margin: 0 0;
     position: absolute;
-    top: 13vw;
+    top: 30vh;
     left: 5vw;
     align-items: center;
     vertical-align: middle;
@@ -14,7 +14,7 @@
 
 .wrapper {
     position: relative;
-    height: 13vw;
+    height: 25vh;
     width: 7vw;
     margin: 25% auto;
 }
@@ -24,12 +24,10 @@
     position: absolute;
     visibility: visible;
     background-color: #8c918e;
-    height: 13vw;
-    width: 7vw;
-    border-top-right-radius: 100%;
-    border-top-left-radius: 100%;
-    border-bottom-left-radius: 50%;
-    border-bottom-right-radius: 50%;
+    /*height: 13vw;*/
+    height: 100%;
+    width: 100%;
+    border-radius: 100% 100% 50% 50%;
     border-top: 0.5vw solid #a75248;
     z-index: 1;
 }
@@ -64,24 +62,26 @@
 .fin-left {
     position: absolute;
     visibility: visible;
-    height: 4.5vw;
+    height: min(9vh, 4.5vw);
     width: 4vw;
     background-color: #a75248;
     left: -2.5vw;
     top: calc(100% - 4.5vw);
     border-top-left-radius: 80%;
     border-bottom-left-radius: 20%;
+    z-index: 0;
 }
 .fin-right {
     position: absolute;
     visibility: visible;
-    height: 4.5vw;
+    height: min(9vh, 4.5vw);
     width: 4vw;
     background-color: #a75248;
     right: -2.5vw;
     top: calc(100% - 4.5vw);
     border-top-right-radius: 80%;
     border-bottom-right-radius: 20%;
+    z-index: 0;
 }
 
 .exhaust-flame {
@@ -98,7 +98,6 @@
 
 .exhaust-fumes {
     position: absolute;
-    background: #a75248;
     left: 30%;
     visibility: hidden;
     border-radius: 100%;
