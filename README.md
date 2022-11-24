@@ -9,9 +9,6 @@ code attached to a project. For more information on liftover dependencies see [d
 
 This web application uses authentication, cookies and sessions. Functionality is a subject of change and improvement.
 
-Currently, the herein described service is available at https://65.108.154.166:4000/index/ (authentication is required
-upon file submission, credentials are currently being provided only upon request here or elsewhere).
-
 ## Input
 
 Submitted files must comply with the following standard:
