@@ -3,8 +3,6 @@ package utils
 
 import (
 	"bufio"
-	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -14,27 +12,21 @@ import (
 func MakeDir(path string) error {
 	err := os.Mkdir(path, 0755)
 	if err != nil && os.IsExist(err) {
-		log.Printf("Path %s already exists\n", path)
 		return nil
 	}
 	return err
 }
 
 // RemoveFile removes a file specified by a path.
-func RemoveFile(path string) {
+func RemoveFile(path string) error {
 	err := os.Remove(path)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	fmt.Printf("File %s successfully deleted\n", path)
+	return err
 }
 
 // GetFileSize provides byte size of a file specified by a path.
 func GetFileSize(inputFile string) string {
 	fi, err := os.Stat(inputFile)
 	if err != nil {
-		log.Println(err)
 		return "0"
 	}
 	return strconv.FormatInt(fi.Size(), 10)

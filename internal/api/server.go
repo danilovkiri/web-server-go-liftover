@@ -3,6 +3,7 @@ package api
 
 import (
 	"fmt"
+	"github.com/rs/zerolog"
 	"net/http"
 	"time"
 
@@ -13,19 +14,20 @@ import (
 )
 
 // InitServer returns a http.Server object ready to be listening and serving.
-func InitServer(cfg *config.ServerConfig, app *config.Application) *http.Server {
-	liftoverService, _ := liftover.InitLiftover()
-	urlHandler := handlers.InitURLHandler(cfg, app, liftoverService)
+func InitServer(cfg *config.ServerConfig, app *config.Application, logger *zerolog.Logger) *http.Server {
+	liftoverService := liftover.InitLiftover(logger)
+	urlHandler := handlers.InitURLHandler(cfg, app, liftoverService, logger)
 	mux := http.NewServeMux()
-	mux.Handle("/index/", http.StripPrefix("/index/", http.FileServer(http.Dir("../../public"))))
+	mux.Handle("/index/", http.StripPrefix("/index/", http.FileServer(http.Dir(app.Path.WD+"/public"))))
 	mux.HandleFunc("/index/hg19to38/", middleware.Conveyor(urlHandler.MainHandler19to38, urlHandler.Authorizer))
 	mux.HandleFunc("/index/hg38to19/", middleware.Conveyor(urlHandler.MainHandler38to19, urlHandler.Authorizer))
 	srv := &http.Server{
-		Addr:         fmt.Sprintf("%v:%v", cfg.Constants.ServerIP, cfg.Constants.ServerPort),
+		Addr:         fmt.Sprintf("%v:%v", cfg.Constants.ServerHost, cfg.Constants.ServerPort),
 		Handler:      mux,
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  60 * time.Second,
 		WriteTimeout: 60 * time.Second,
 	}
+	logger.Info().Msg(fmt.Sprintf("Running on %s", srv.Addr))
 	return srv
 }
