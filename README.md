@@ -33,38 +33,39 @@ rs200599638	1	817538	GG
 ```
 
 ## Running
-To start the local server run the following command in a terminal specifying `AUTH_USERNAME`, `AUTH_PASSWORD` and a
-path (either relative or absolute) to a configuration file `CONFIG`. Note that
-[defaultConfig.yaml](internal/config/resources/defaultConfig.yaml) is a template and has to be amended.
 
-`AUTH_USERNAME` and `AUTH_PASSWORD` are required, `CONFIG` has a default value pointing to
-[defaultConfig.yaml](internal/config/resources/defaultConfig.yaml).
+### Non-containerised
+
+Run from inside the parent directory containing the project, set this directory as env `HOME` variable.
+
 ```bash
-AUTH_USERNAME=alice AUTH_PASSWORD=alice CONFIG=/path/to/config.yaml go run main.go
+AUTH_USERNAME=alice AUTH_PASSWORD=alice HOME=/parent/dir \
+CERT=/path/to/localhost.pem \
+KEY=/path/to/localhost-key.pem \
+STORAGE=./file-storage \
+HOST=localhost PORT=8080 go run ./web-server-go-liftover/cmd/server/main.go
 ```
 
-The command must be executed from inside the [cmd/server](cmd/server) directory.
-
-Accessing the main page is available at `https://<serverIP>:<serverPort>/index/`. Multiple client sessions can be run
+Accessing the main page is available at `https://<serverHost>:<serverPort>/index/`. Multiple client sessions can be run
 simultaneously.
 
-## Notes
+### Containerised
 
-### Config
-The [config.yaml](./internal/config/resources/defaultConfig.yaml) file implements the following self-explanatory structure:
-```yaml
-constants:
-  certFile: /path/to/localhost.pem
-  keyFile: /path/to/localhost-key.pem
-  serverIP: X.X.X.X
-  serverPort: 4000
-  fileStrorage: /path/to/filestoragedir
+Build an image and run the container:
+
+```bash
+docker build .
+docker container run --env AUTH_USERNAME=alice --env AUTH_PASSWORD=alice --env PORT=8080 --env HOST=0.0.0.0 \
+--publish target=8080,published=<localIP>:8080,protocol=tcp <imageID>
 ```
-where `certFile` and `keyFile` point to `.pem` files created locally via [`mkcert`](https://github.com/FiloSottile/mkcert)
-or issued by any CA. `fileStrorage` points to a folder which will handle uploads and downloads of files. The directory
+
+
+## Notes
+`CERT` and `KEY` files point to `.pem` files created locally via [`mkcert`](https://github.com/FiloSottile/mkcert)
+or issued by any CA. `STORAGE` points to a folder which will handle uploads and downloads of files. The directory
 will be created according to the provided path unless exists.
 
 ### File storage
-Uploaded and processed files are stored in `uploaded-files` and `processed-files` folders in the `/path/to/filestoragedir`
+Uploaded and processed files are stored in `uploaded-files` and `processed-files` folders in the `STORAGE`
 directory according to configuration parameters. Client and server-provided files are immediately deleted upon processing
 completion.

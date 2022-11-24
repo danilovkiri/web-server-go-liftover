@@ -4,7 +4,6 @@ package handlers
 import (
 	"crypto/sha256"
 	"crypto/subtle"
-	"fmt"
 	"github.com/kataras/go-sessions/v3"
 	"github.com/rs/zerolog"
 	"io"
@@ -81,7 +80,7 @@ func (h *URLHandler) MainHandler38to19(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, errors.TempFileWritingError, http.StatusInternalServerError)
 		return
 	}
-	h.logger.Info().Msg(fmt.Sprintf("Client-provided file was written to", tempFile.Name()))
+	h.logger.Info().Msg("Client-provided file was written to " + tempFile.Name())
 	fileConformityStatus := utils.CheckUploadedFileConformity(tempFile.Name())
 	if fileConformityStatus != "ok" {
 		cookieObj := cookie.SetConformityFailedCookie()
@@ -101,7 +100,7 @@ func (h *URLHandler) MainHandler38to19(w http.ResponseWriter, r *http.Request) {
 	cookieObj := cookie.SetDownloadInitiatedCookie()
 	http.SetCookie(w, &cookieObj)
 	http.ServeFile(w, r, h.app.Path.ProcessedDir+outputFile)
-	h.logger.Info().Msg(fmt.Sprintf("Successfully provided client with file %s\n", outputFile))
+	h.logger.Info().Msg("Successfully provided client with file" + outputFile)
 	err = utils.RemoveFile(h.app.Path.ProcessedDir + outputFile)
 	if err != nil {
 		h.logger.Warn().Err(err).Msg("File removal failed")
@@ -157,7 +156,7 @@ func (h *URLHandler) MainHandler19to38(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, errors.TempFileWritingError, http.StatusInternalServerError)
 		return
 	}
-	h.logger.Info().Msg(fmt.Sprintf("Client-provided file was written to", tempFile.Name()))
+	h.logger.Info().Msg("Client-provided file was written to" + tempFile.Name())
 	fileConformityStatus := utils.CheckUploadedFileConformity(tempFile.Name())
 	if fileConformityStatus != "ok" {
 		cookieObj := cookie.SetConformityFailedCookie()
@@ -177,7 +176,7 @@ func (h *URLHandler) MainHandler19to38(w http.ResponseWriter, r *http.Request) {
 	cookieObj := cookie.SetDownloadInitiatedCookie()
 	http.SetCookie(w, &cookieObj)
 	http.ServeFile(w, r, h.app.Path.ProcessedDir+outputFile)
-	h.logger.Info().Msg(fmt.Sprintf("Successfully provided client with file %s\n", outputFile))
+	h.logger.Info().Msg("Successfully provided client with file" + outputFile)
 	err = utils.RemoveFile(h.app.Path.ProcessedDir + outputFile)
 	if err != nil {
 		h.logger.Warn().Err(err).Msg("File removal failed")

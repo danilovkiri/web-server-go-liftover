@@ -24,7 +24,7 @@ type ServerConfig struct {
 		CertFile    string `env:"CERT,required"`
 		KeyFile     string `env:"KEY,required"`
 		FileStorage string `env:"STORAGE" envDefault:"./file-storage"`
-		ServerHost  string `env:"HOST" envDefault:"localhost"`
+		ServerHost  string `env:"HOST" envDefault:"0.0.0.0"`
 		ServerPort  string `env:"PORT" envDefault:"8080"`
 	}
 }

@@ -18,7 +18,7 @@ type Liftover struct {
 // InitLiftover initializes a Liftover service.
 func InitLiftover(logger *zerolog.Logger) *Liftover {
 	liftover := &Liftover{
-		fullpath: "internal/service/liftover/pyliftover/main.py",
+		fullpath: "web-server-go-liftover/internal/service/liftover/pyliftover/main.py",
 		logger:   logger,
 	}
 	return liftover
