@@ -10,8 +10,8 @@ code attached to a project. For more information on liftover dependencies see [d
 This web application uses authentication, cookies and sessions. Functionality is a subject of change and improvement.
 
 Currently running on:
-1. https://65.21.156.138:8080 — as a standalone Docker container
-2. https://65.21.156.138:8081 — as a minikube single-node cluster with 3 replicas
+1. https://65.21.156.138:8080/index/ — as a standalone Docker container
+2. https://65.21.156.138:8081/index/ — as a minikube single-node cluster with 3 replicas
 
 ## Input
 
