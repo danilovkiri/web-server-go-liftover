@@ -122,18 +122,12 @@ Expose a deployment via a NodePort service:
 kubectl expose deployment go-liftover-server --name=liftover-service --type=NodePort
 ```
 
-Get `liftover-service`s externally available `service_HOST` and `service_PORT` parameters via running:
-
-```bash
-minikube service liftover-service --url
-```
-
 Set up a port forwarding:
 
 ##### kubectl port forwarding
 
 Run the following code in the background where `vm_external_PORT` is the port you intend to listen to on your VM for
-outside requests and `target_PORT` is the TargetPort of the k8s type=NodePort service.
+outside requests and `target_PORT` is the TargetPort of the k8s type=NodePort `liftover-service` service.
 
 ```bash
 firewall-cmd --add-port=<vm_external_PORT>/tcp
@@ -144,6 +138,12 @@ The service will be available worldwide at `https://<vm_external_IP>:<vm_externa
 the IPv4 address of your VM/server.
 
 ##### nginx proxy
+
+Get `liftover-service`s externally available `service_HOST` and `service_PORT` parameters via running:
+
+```bash
+minikube service liftover-service --url
+```
 
 Install nginx and edit the `/etc/nginx/nginx.conf` to contain
 
@@ -162,7 +162,8 @@ Restart the nginx via running:
 service nginx restart
 ```
 
-The service will be available worldwide at `https://<vm_external_IP>:<vm_external_PORT>/index/`
+The service will be available worldwide at `https://<vm_external_IP>:<vm_external_PORT>/index/` where `vm_external_IP` is
+the IPv4 address of your VM/server.
 
 ## Miscellaneous
 

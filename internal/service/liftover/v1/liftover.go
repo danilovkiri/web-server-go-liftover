@@ -4,21 +4,20 @@ package liftover
 import (
 	"fmt"
 	"github.com/rs/zerolog"
-	"log"
 	"os"
 	"os/exec"
 )
 
 // Liftover defines an object structure and attributes available for its methods.
 type Liftover struct {
-	fullpath string
+	fullPath string
 	logger   *zerolog.Logger
 }
 
 // InitLiftover initializes a Liftover service.
 func InitLiftover(logger *zerolog.Logger) *Liftover {
 	liftover := &Liftover{
-		fullpath: "web-server-go-liftover/internal/service/liftover/pyliftover/main.py",
+		fullPath: "web-server-go-liftover/internal/service/liftover/pyliftover/main.py",
 		logger:   logger,
 	}
 	return liftover
@@ -41,12 +40,11 @@ func (l *Liftover) Convert19to38(wd string, inputFile string, outputFile string)
 // makeCmdStruct creates an exec.Cmd object ready to be executed.
 func (l *Liftover) makeCmdStruct(wd string, inputFile string, outputFile string, sourceBuild string) *exec.Cmd {
 	cmdGo := &exec.Cmd{
-		Path:   wd + "/" + l.fullpath,
-		Args:   []string{wd + "/" + l.fullpath, inputFile, outputFile, sourceBuild},
+		Path:   wd + "/" + l.fullPath,
+		Args:   []string{wd + "/" + l.fullPath, inputFile, outputFile, sourceBuild},
 		Stdout: os.Stdout,
 		Stderr: os.Stderr,
 	}
 	l.logger.Info().Msg(fmt.Sprintf("Compiled shell command: %s", cmdGo.String()))
-	log.Println()
 	return cmdGo
 }
