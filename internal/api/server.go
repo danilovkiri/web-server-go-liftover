@@ -22,6 +22,7 @@ func InitServer(cfg *config.ServerConfig, app *config.Application, logger *zerol
 	mux.Handle("/index/", http.StripPrefix("/index/", http.FileServer(http.Dir(app.Path.WD+"/web-server-go-liftover/public"))))
 	mux.HandleFunc("/index/hg19to38/", middleware.Conveyor(urlHandler.MainHandler19to38, urlHandler.Authorizer))
 	mux.HandleFunc("/index/hg38to19/", middleware.Conveyor(urlHandler.MainHandler38to19, urlHandler.Authorizer))
+	mux.HandleFunc("/health/", urlHandler.HealthChecker)
 	srv := &http.Server{
 		Addr:         fmt.Sprintf("%v:%v", cfg.Constants.ServerHost, cfg.Constants.ServerPort),
 		Handler:      mux,

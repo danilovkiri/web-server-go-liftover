@@ -31,6 +31,12 @@ func InitURLHandler(serverConfig *config.ServerConfig, app *config.Application, 
 	return &URLHandler{serverConfig: serverConfig, app: app, converter: converter, logger: logger}
 }
 
+// HealthChecker is a non-restricted endpoint for an app health check
+func (h *URLHandler) HealthChecker(w http.ResponseWriter, r *http.Request) {
+	h.logger.Info().Msg("Health check endpoint hit")
+	w.WriteHeader(http.StatusOK)
+}
+
 // MainHandler38to19 handles file upload, processing and provision for hg38-to-hg19 scheme.
 func (h *URLHandler) MainHandler38to19(w http.ResponseWriter, r *http.Request) {
 	h.logger.Info().Msg("38-to-19 file upload endpoint hit")

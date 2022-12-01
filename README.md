@@ -107,6 +107,16 @@ spec:
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 1
+          httpGet:
+            scheme: HTTP
+            path: /health
+            port: 8080
         env:
         - name: PORT
           value: "8080"

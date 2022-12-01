@@ -6,7 +6,6 @@ require (
 	github.com/caarlos0/env/v6 v6.9.2
 	github.com/kataras/go-sessions/v3 v3.3.0
 	github.com/rs/zerolog v1.28.0
-	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
@@ -18,4 +17,5 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.15.1 // indirect
 	golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
