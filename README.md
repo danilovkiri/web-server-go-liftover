@@ -11,7 +11,7 @@ This web application uses authentication, cookies and sessions. Functionality is
 
 Currently running on:
 1. https://65.21.156.138:8080/index/ — as a standalone Docker container
-2. https://65.21.156.138:8081/index/ — as a minikube single-node cluster with 3 replicas
+2. https://65.21.156.138:8081/index/ — as a minikube single-node cluster with 3 replicas and liveness probes
 
 ## Input
 
@@ -114,7 +114,7 @@ spec:
           successThreshold: 1
           failureThreshold: 1
           httpGet:
-            scheme: HTTP
+            scheme: HTTPS
             path: /health
             port: 8080
         env:
